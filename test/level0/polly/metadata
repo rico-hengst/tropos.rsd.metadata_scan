@@ -1,0 +1,31 @@
+# METADATA FILE
+ 
+# Don't modify the content in the next line
+[TROPOS_RM_SAT_METADATA_v0.1]
+
+# title of the datasets (meaningful e.g: name of the directory)
+TITLE = Polly observations
+# short description of the datasets
+DESCRIPTION = Polly observations worl-wide regarding to the project POLLYNET
+# name of the creator/author of the dataset (email or full name, optional)
+CONTACT = polly@tropos.de
+# name of the institution, where the dataset was created (name, country,)
+INSTITUTION = https://www.tropos.de
+# dois, papers, URLs, etc. (optional)
+REFERENCES = 
+# name of the license for using the dataset
+LICENSE = CC-BY-SA
+# name of the platform, where the based instrument was installed during the measurement
+PLATFORM = Container (mobile)
+# name of the instrument(s) or model (optional)
+SOURCE = Polly arielle, pollyXT ...
+# name of the geographical region(s), where data are related to (optional)
+REGION = World-wide
+# name of the project(s) where the dataset is related to (optional, e.g.:MOSAIC)
+PROJECT = PollyNet
+# full name of the person at TROPOS for generating/harvesting/updating dataset
+TROPOS_CONTACT = Holger B
+# path and name of script to update this dataset
+UPDATE_SCRIPT = xxx.sh
+# boolean value (TRUE | FALSE), if dataset is central backuped
+BACKUP = YES

@@ -1,0 +1,31 @@
+# METADATA FILE
+ 
+# Don't modify the content in the next line
+[TROPOS_RM_SAT_METADATA_v0.1]
+
+# title of the datasets (meaningful e.g: name of the directory)
+TITLE = All sky imager Powershot Oceanet
+# short description of the datasets
+DESCRIPTION = All sky imager data from Powershot Oceanet
+# name of the creator/author of the dataset (email or full name, optional)
+CONTACT = ?@tropos.de
+# name of the institution, where the dataset was created (name, country,)
+INSTITUTION = https://www.tropos.de
+# dois, papers, URLs, etc. (optional)
+REFERENCES = 
+# name of the license for using the dataset
+LICENSE = CC-BY-SA
+# name of the platform, where the based instrument was installed during the measurement
+PLATFORM = On top of the observation container 
+# name of the instrument(s) or model (optional)
+SOURCE = Powershot Oceanet
+# name of the geographical region(s), where data are related to (optional)
+REGION = 
+# name of the project(s) where the dataset is related to (optional, e.g.:MOSAIC)
+PROJECT = 
+# full name of the person at TROPOS for generating/harvesting/updating dataset
+TROPOS_CONTACT = ??
+# path and name of script to update this dataset
+UPDATE_SCRIPT = 
+# boolean value (TRUE | FALSE), if dataset is central backuped
+BACKUP = YES
