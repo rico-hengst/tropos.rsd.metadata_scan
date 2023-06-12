@@ -1,0 +1,17 @@
+
+# requires 'Foo', '== 1.0011';
+
+requires 'Getopt::Long';
+requires 'Modern::Perl';
+requires 'utf8';
+
+
+
+requires 'Log::Report';
+requires 'Template';
+
+requires 'Config::Tiny';
+
+requires 'File::Find::Rule';
+requires 'Encode';
+requires 'Path::Class';
