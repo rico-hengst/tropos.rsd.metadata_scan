@@ -1,0 +1,375 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Readme Listing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+    body     { 
+        font-family: "Gill Sans Extrabold", Helvetica, sans-serif;
+        padding: 2em 5em;
+    }
+    .hidden {
+        display: none;
+    }
+    button {
+        font-size: inherit;
+        border: none;
+        background: #09d;
+        color: white;
+        padding: 10px 20px;
+    }
+    .table thead th {
+        text-align: left;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    .row {
+      display: flex;
+    }
+
+    /* Create two equal columns that sits next to each other */
+    .column {
+      flex: 40%;
+      padding: 5px;
+      /*height: 400px;  Should be removed. Only for demonstration */
+    }
+    
+    code {
+      display: block;
+      white-space: pre-wrap   
+    }
+    
+    :target {
+	color: blue;
+    }
+    
+    
+    
+    bottom{
+		background-color: orange;
+/*		position: absolute; top:93%;
+ */		
+		position: relative;
+		margin-top: 50px;
+		width: 98%;
+		}
+
+		.row-footer {
+		width: 100%;
+  		text-align: center;
+  		background-color: rgb(187,187,187);
+  		border-radius: 5px;
+		}
+
+		.columns-footer {
+  		width: 40%;
+  		min-width: 280px;
+  		vertical-align: top;/*Fix for different     height elements*/
+  		margin-bottom: 0px;
+  		display: inline-block;
+  		color: #fff;
+  		border-radius: 5px;
+ 		}
+		.align-right {
+  		text-align: right;
+		}
+		@media screen and (max-width: 680px) {
+  			.columns {
+    		width: 100%; 
+  			}
+		}
+
+		.text-white-footer{
+  			color:white;
+  			text-decoration: none;
+		}
+
+
+        .shadow-text{
+              text-shadow: 5px 5px 10px black;
+        }
+    </style>
+<!--
+    <script charset="utf-8" src="js/app.js"></script>
+    <link rel="stylesheet" href="css/app.css" />
+-->
+</head>
+<body>
+    
+    <div class="row" style="margin-top:0.1ex">
+        
+        <div class="column" style="background-color:none;">
+            <h1>Catalogue METADATA</h1>
+            <p>The catalogue contains selected metadata of the archived data <br/>rof the emote sensing working group of TROPOS.</p>
+        </div>
+
+        <div class="column" style="background-color:none;margin-top:1ex">
+            <p>Catalogue created: <abbr class="shadow-text" id="created_id" title="[% datetime.ymd; ' '; datetime.hms %]">??</abbr> </p>
+            Scanned directories: <span class="shadow-text">[% config.time_consumption_directory_tree ? ' ... ' _ config.time_consumption_directory_tree.in_units('seconds') _ ' seconds scantime': '' %]</span>
+            <ul>[% FOREACH dataset_dir IN dataset_dirs %]
+                <li>Directory [% loop.count %]: <span class="shadow-text">[% dataset_dir %]</span></li>
+            [% END %]
+            </ul>
+            <p>Filename metadata files: <span class="shadow-text">[% config.metadataconfig.metadata_filenames %] [% config.time_consumption_metadata ? ' ... ' _ config.time_consumption_metadata.in_units('seconds') _ ' seconds scantime': '' %]</span></p>
+            <p>Scanlevel directory tree/ metadata file: <span class="shadow-text">[% config.metadataconfig.maxlevel_directory_tree _ ' / ' _  config.metadataconfig.maxlevel_metadata%]</span></p>
+        </div>
+    </div>
+    
+    <hr style="margin-top:5ex;margin-bottom:5ex" />
+    
+
+    
+    <button onclick="window.location.href='#tree_id';">
+      1. Directory tree
+    </button>
+    
+    <button onclick="window.location.href='#section_table_id';">
+      2. Metadata catalogue table
+    </button>
+    
+    <button onclick="window.location.href='#id_documents';">
+      3. How to add/update a METADATA file?
+    </button>
+
+
+    <hr style="margin-top:5ex;margin-bottom:5ex" />
+
+
+    <h2 id="tree_id">1. Directory tree(s)</h2>
+    [% MACRO step_by_step(childs, content) BLOCK %]
+        [% contains_a_valid_record = 0 %]
+        [% FOREACH child IN childs %]
+            [% IF content.$child %]
+                [% contains_a_valid_record = 1 %]
+            [% END %]
+        [% END %]
+        
+        [% IF contains_a_valid_record == 1%]
+            <ul>
+            [% FOREACH child IN childs %]
+                <li>[% content.$child.current_dir _ '/';
+                    UNLESS content.$child.is_executable; ' <span style="color:red">No authorisation to enter directory!</span>'; END;
+                    IF content.$child.disk_usage; '  <sup>disk usage: ' _ content.$child.disk_usage _ '</sup>'; END; %]
+                    [% IF content.$child.metadata %]
+                        <a href="#[% content.$child.metadata.pathfilename %]" style="margin-left: 2.5em">[% content.$child.metadata.filename %]</a>
+                    [% END %]
+                    [% IF content.$child.child_paths.size > 0 %]
+                            [% step_by_step(content.$child.child_paths, content) %]
+                        
+                    [% END %]
+                </li>
+            [% END %]
+            </ul>
+        [% END %]
+    [% END %] 
+
+    <ul style="font-family:'Courier New', Courier, monospace; font-size:100%">
+    [% FOREACH archive_dir IN dataset_dirs; %]
+        <li><b>[% archive_dir _ '/' %]</b>
+        [% IF content.$archive_dir.child_paths.size > 0%]
+            [% step_by_step(content.$archive_dir.child_paths, content) %]
+        [% END %]
+        </li>
+
+    [% END %]
+    </ul>
+
+
+  
+  
+  
+  
+  
+  
+    
+    <hr style="margin-top:5ex;margin-bottom:5ex" />
+    
+    <h2 id="section_table_id">2. Table of METADATA files</h2>
+
+    <table id="table_id" class="dataTable dt-head-right">
+    <thead>
+        <tr>
+            <th>File</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Contact</th>
+            <th>Institution</th>
+            <th>References</th>
+            <th>Licence</th>
+            <th>Platform</th>
+            <th>Source</th>
+            <th>Region</th>
+            <th>Project</th>
+            <th>Tropos contact</th>
+            <th>Update script</th>
+            <th>Backup</th>
+        </tr>
+    </thead>
+    <tbody>
+        [% FOREACH path IN content.keys.sort; %]
+        [% IF content.$path.metadata %]
+        [% FOREACH section IN content.$path.metadata.content.keys.sort %]
+            [% IF section.length > 1 %]
+            [% metadata_filename = content.$path.metadata.filename;
+                metadata_pathfilename = content.$path.metadata.pathfilename%]
+            [% IF !content.$path.metadata.content.$section.TITLE OR !content.$path.metadata.content.$section.SOURCE OR !content.$path.metadata.content.$section.TROPOS_CONTACT; 
+                ccc='background-color:rgba(255, 99, 71,0.25); color:rgba(255, 99, 71,0.95)'; 
+                tooltip = '<abbr title="Some keywords are missing in README &lt;' _ metadata_pathfilename _ '&gt; !">' _ section _ metadata_pathfilename _ '</abbr>';
+            ELSE; 
+                ccc='';
+                tooltip=' ';
+            END; %]
+            <tr valign="top" style="[% ccc %]" id="[% metadata_pathfilename %]">
+                <td valign="top"><small>[% tooltip.length>10? tooltip : metadata_pathfilename %] </small></td>
+                <td valign="top"><b>[% content.$path.metadata.content.$section.TITLE %]</b></td>
+                <td valign="top">[% content.$path.metadata.content.$section.DESCRIPTION %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.CONTACT %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.INSTITUTION %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.REFERENCES %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.LICENSE %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.PLATFORM %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.SOURCE %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.REGION %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.PROJECT %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.TROPOS_CONTACT %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.UPDATE_SCRIPT %]</td>
+                <td valign="top">[% content.$path.metadata.content.$section.BACKUP %]</td>
+            </tr>
+            [% END %]
+        [% END %]
+        [% END %]
+        [% END %]
+        
+        
+    </tbody>
+    </table>
+
+
+
+    <hr style="margin-top:5ex;margin-bottom:5ex"/>
+
+    <h2 id="id_documents">3. How to add/update a METADATA file?</h2>
+    <h4>Assistance documents</h4>
+
+
+    <div class="row" style="margin-top:1ex">
+        <div class="column" style="background-color:#ccc;">
+            <h3>Metadata record</h3>
+
+            <button id="button_id">How to add metadata</button><br/>
+            <div class="hidden" id="figure_id">
+                <p>Login to the related server.</p>
+                <p>To enter a new metadata record, add a new "metadata" file in the directory structure of</p>
+                <ul>
+                [% FOREACH dataset_dir IN dataset_dirs %]
+                    <li>[% dataset_dir %]</li>
+                [% END %]
+                </ul>
+                
+                <p>All METADATA files will be analyzed ones a day via cron.</p>
+                <p>You new added or edited METADATA files will be shown at this catalogue within 24 hours.</p>
+            </div>
+        </div>
+        <div class="column" style="background-color:#bbb;">
+            <h3>Example of a metadata file (ini format)</h3>
+            <button id="button_id2">Toggle metadata</button><br/>
+            
+            <code class="hidden" id="code_id">
+# METADATA FILE
+ 
+# Don't modify the content in the next line
+[TROPOS_RM_SAT_METADATA_v0.1]
+
+# title of the datasets (meaningful e.g: name of the directory)
+TITLE = CAMS Reanalysis
+# short description of the datasets
+DESCRIPTION = ERA5 provides a snapshot of the atmosphere, land surface and ocean waves for each hour from 1979 onwards ...
+# name of the creator/author of the dataset (email or full name, optional)
+CONTACT = Jane Doe
+# name of the institution, where the dataset was created (name, country,)
+INSTITUTION = https://www.ecmwf.int/en/forecasts/datasets
+# dois, papers, URLs, etc. (optional)
+REFERENCES = 
+# name of the license for using the dataset
+LICENSE = https://www.ecmwf.int/sites/default/files/ECMWF_Standard_Licence.pdf
+# name of the platform, where the based instrument was installed during the measurement
+PLATFORM = Name of the platform
+# name of the instrument(s) or model (optional)
+SOURCE = Name of the instrument
+# name of the geographical region(s), where data are related to (optional)
+REGION = Europe, Germany
+# name of the project(s) where the dataset is related to (optional, e.g.:MOSAIC)
+PROJECT = Name of the project
+# full name of the person at TROPOS for generating/harvesting/updating dataset
+TROPOS_CONTACT = Florian
+# path and name of script to update this dataset
+UPDATE_SCRIPT = no, automatated upload of data to tropos sftp server
+# boolean value (TRUE | FALSE), if dataset is central backuped
+BACKUP = FALSE
+            </code>
+      </div>
+    </div>
+    
+    <hr style="margin-top:5ex;margin-bottom:5ex;color:silver;"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="https://polly.tropos.de/static/lib/datatables-1.13.4/datatables.min.css">
+<script type="text/javascript" src="https://polly.tropos.de/static/lib/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="https://polly.tropos.de/static/lib/datatables-1.13.4/datatables.min.js"></script>
+
+<script>
+// To set present_dates to two variables 
+var present_date = new Date(); 
+var this_file_created_date = new Date([% datetime.year %], [% datetime.month - 1 %], [% datetime.day %], [% datetime.hour %], [% (datetime.minute + 0) %]);
+
+// To Calculate the result in milliseconds and then converting into days 
+var hh = Math.round(present_date.getTime() - this_file_created_date.getTime()) / (1000 * 60 * 60); 
+  
+// To remove the decimals from the (Result) resulting days value 
+var hh = hh.toFixed(0); 
+
+    
+$(document).ready( function () {
+    $('#table_id').DataTable( {
+       // paging:           false
+        }
+    );
+    
+    $("#button_id").click(function(){
+        $("#figure_id").toggle();
+    });
+    
+    $("#button_id2").click(function(){
+        $("#code_id").toggle();
+    });
+    
+    $("#created_id").text(hh + " hour(s) ago");
+    
+
+} );
+
+
+</script>
+
+
+
+<div class="bottom">
+    <div class="row-footer">
+        <div class="columns-footer">
+            <p><a class="text-white-footer" href="http://rsd2.tropos.de/footer/imprint.html">Imprint</a></p>
+        </div>
+        <div class="columns-footer">
+            <p><a class="text-white-footer" href="http://rsd2.tropos.de/footer/dpd.html">Data Protection Declaration</a></p>
+        </div>
+    </div>
+</div>
+    
+    
+</body>
+</html>
