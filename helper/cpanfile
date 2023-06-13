@@ -1,6 +1,8 @@
 
 # requires 'Foo', '== 1.0011';
 
+requires 'DateTime';
+requires 'Data::Dump';
 requires 'Getopt::Long';
 requires 'Modern::Perl';
 requires 'utf8';
