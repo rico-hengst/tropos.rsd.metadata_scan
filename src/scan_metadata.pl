@@ -31,7 +31,10 @@ unless (-f $config_file) {
 
 my $config1 = Config::Tiny->read( $config_file );
 
-
+unless($config1) {
+    say("Config $config_file is empty!");
+    exit;
+}
 
 
 # get and check archive dirs
