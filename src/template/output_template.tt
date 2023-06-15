@@ -92,6 +92,24 @@
         .shadow-text{
               text-shadow: 5px 5px 10px black;
         }
+        
+        .pill2 {
+          max-width:10ex;
+          border: 0.1mm solid blue;
+          padding:0.3ex;
+          border-radius: 40px 999em 999em 40px;
+          font-size: 70%;
+          text-align: right;
+        }
+
+        .pill1 {
+          max-width:10ex;
+          margin-left: 2.5em;
+          border: 0.1mm solid green;
+          padding:0.3ex;
+          border-radius: 999em 40px 40px 999em;
+          font-size: 70%;
+        }
     </style>
 <!--
     <script charset="utf-8" src="js/app.js"></script>
@@ -151,7 +169,10 @@
         [% IF contains_a_valid_record == 1%]
             <ul>
             [% FOREACH child IN childs %]
-                <li>[% content.$child.current_dir _ '/';
+                <li>[% content.$child.current_dir _ '/ ';
+                    IF config.metadataconfig.show_owner_group;
+                        '<span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span>';
+                    END;
                     UNLESS content.$child.is_executable; ' <span style="color:red">No authorisation to enter directory!</span>'; END;
                     IF content.$child.disk_usage; '  <sup>disk usage: ' _ content.$child.disk_usage _ '</sup>'; END; %]
                     [% IF content.$child.metadata %]

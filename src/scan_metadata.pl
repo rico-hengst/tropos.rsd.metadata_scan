@@ -100,10 +100,19 @@ sub scan_tree{
         # get Path Class Dir
         my $pcd = Path::Class::Dir->new($dir);
         
+        # get stat info
+        my ($device, $inode, $mode, $nlink, $uid, $gid, $rdev, $size, $atime, $mtime, $ctime, $blksize, $blocks) = stat($dir);
+
+        
         # add record to hash
         $$tree_hash{$dir}{parent_path} = $pcd->parent->stringify;
         $$tree_hash{$dir}{child_paths} = \@sub_dirs;
         $$tree_hash{$dir}{current_dir} = $pcd->basename;
+        
+        $$tree_hash{$dir}{owner}        = getpwuid $uid;
+        $$tree_hash{$dir}{group}        = getgrgid $gid;
+
+        
         
         # test if you can enter the directory
         my $is_executable = 1;
