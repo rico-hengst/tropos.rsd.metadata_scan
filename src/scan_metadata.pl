@@ -38,7 +38,8 @@ unless($config1) {
 
 
 # get and check archive dirs
-my @ARCHIVE_DIRS = split(",",$config1->{metadataconfig}->{archive_dirs});
+my @ARCHIVE_DIRS = split(/,/,$config1->{metadataconfig}->{archive_dirs});
+say("No directories to scan, config???") if(@ARCHIVE_DIRS==0);
 foreach my $archive_dir (@ARCHIVE_DIRS) {
     unless(-d $archive_dir) {
         say("WARN: Archive dir not exists: " . $archive_dir);
