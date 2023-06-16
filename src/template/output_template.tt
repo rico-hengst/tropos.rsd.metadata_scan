@@ -95,7 +95,7 @@
         
         .pill2 {
           max-width:10ex;
-          margin-right: 2.5em;
+          margin-right: 1em;
           border: 0.1mm solid blue;
           padding:0.3ex;
           border-radius: 40px 999em 999em 40px;
@@ -105,7 +105,7 @@
 
         .pill1 {
           max-width:10ex;
-          margin-left: 2.5em;
+          margin-left: 5em;
           border: 0.1mm solid green;
           padding:0.4ex;
           border-radius: 999em 40px 40px 999em;
@@ -114,11 +114,23 @@
         
         .pill0 {
           max-width:10ex;
-          margin-left: 2.5em;
+          margin-left: 1em;
           border: 0.1mm solid gray;
           padding:0.4ex;
           border-radius: 2em;
           font-size: 70%;
+        }
+        
+        .pill999 {
+          max-width:10ex;
+          margin-left: 1em;
+          border: 0.1mm solid gray;
+          background-color:red;
+          color:white;
+          padding:0.4ex;
+          border-radius: 2em;
+          font-size: 70%;
+          font-weight: bold;
         }
     </style>
 <!--
@@ -187,7 +199,9 @@
                         '<span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span>';
                         '<span class="pill0">' _ content.$child.access _ '</span>';
                     END;
-                    UNLESS content.$child.is_executable; ' <span style="color:red">No authorisation to enter directory!</span>'; END;
+                    UNLESS content.$child.is_executable; 
+                        ' <span class="pill999">No authorisation to enter directory!</span>'; 
+                    END;
                     IF content.$child.disk_usage; '  <span class="pill0">disk usage: ' _ content.$child.disk_usage _ '</span>'; END; %]
                     [% IF content.$child.child_paths.size > 0 %]
                             [% step_by_step(content.$child.child_paths, content) %]
