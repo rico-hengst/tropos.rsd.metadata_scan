@@ -75,8 +75,8 @@ my $merged_hash = merge_hashes($meta_hash, $tree_hash);
 #say(dump(%$merged_hash));
 
 # generate html
-$$config1{time_consumption_directory_tree} = $time1 - $time2;
-$$config1{time_consumption_metadata} = $time3 - DateTime->now();
+$$config1{time_consumption_directory_tree} = $time2 - $time1;
+$$config1{time_consumption_metadata} = DateTime->now() - $time3;
 
 say(dump(%$config1));
 
