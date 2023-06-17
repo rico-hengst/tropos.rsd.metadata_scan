@@ -154,6 +154,7 @@
         .tree2{
           --spacing : 1.5rem;
           --radius  : 10px;
+          font-family: 'Courier New', Courier, monospace;
         }
         
         .tree2 li{
@@ -246,74 +247,30 @@
 
 
     <hr style="margin-top:5ex;margin-bottom:5ex" />
-    
-    
-    
-    
-    
-    
-    <ul class="tree2">
-        <li>
-            <details open>
-              <summary>Giant planets</summary>
-              <ul>
-                <li>
-                  <details open>
-                    <summary>Gas giants</summary>
-                    <ul>
-                      <li>Jupiter</li>
-                      <li>
-                        <details open>
-                            <summary>ewgwg</summary>
-                        </details>
-                          
-                    </li>
-                          
-                    </ul>
-                  </details>
-                </li>
-                <li>
-                  <details>
-                    <summary>Ice giants</summary>
-                    <ul>
-                      <li>Uranus</li>
-                      <li>Neptune</li>
-                    </ul>
-                  </details>
-                </li>
-              </ul>
-            </details>
-          </li>
-    </ul>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+     
     
     
 
 
     <h2 id="tree_id">1. Directory tree(s)</h2>
     <button onclick="myFunction()">Show more/less</button>
-    [% MACRO step_by_step(childs, content) BLOCK %]
-        [% contains_a_valid_record = 0 %]
-        [% FOREACH child IN childs %]
-            [% IF content.$child %]
-                [% contains_a_valid_record = 1 %]
-            [% END %]
-        [% END %]
+    [% MACRO step_by_step(childs, content) BLOCK -%]
+        [% contains_a_valid_record = 0 -%]
+        [% FOREACH child IN childs -%]
+            [% IF content.$child -%]
+                [% contains_a_valid_record = 1 -%]
+            [% END -%]
+        [% END -%]
         
-        [% IF contains_a_valid_record == 1%]
+        [% IF contains_a_valid_record == 1 -%]
             <ul>
-            [% FOREACH child IN childs %]
-                <li>[% content.$child.current_dir _ '/ ';
-                    IF content.$child.metadata;
+            [% FOREACH child IN childs -%]
+                <li>
+                    <details open><summary>
+                    <span style="[% content.$child.is_prohibited ? 'color:gray' : ''; -%]">
+                    [% content.$child.current_dir _ '/ '; -%]
+                    </span>
+                    [% IF content.$child.metadata;
                         '<a href="#' _ content.$child.metadata.pathfilename _ ' style="margin-left: 2.5em">' _ content.$child.metadata.filename _ '</a>';
                     END;
                     '<span class="additional-info">';
@@ -322,33 +279,40 @@
                         '<abbr title="Directory access"><span class="pill0">' _ content.$child.access _ '</span></abbr>';
                     END;
                     IF content.$child.disk_usage; ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ '</span></abbr>'; END;
-
+                    IF content.$child.is_prohibited; '<abbr title="Content not scanned!"><span class="pill999">!</span></abbr>'; END;
                     UNLESS content.$child.is_executable; 
                         ' <abbr title="No authorisation to enter directory!"><span class="pill999">!</span></abbr>'; 
                     END;
-                    '</span>';
+                    '</span>
+                    </summary>';
                     
                     IF content.$child.child_paths.size > 0;
                         step_by_step(content.$child.child_paths, content);
-                    END %]
-                   
+                    END -%]
+                    </details>
                 </li>
-            [% END %]
+            [% END -%]
             </ul>
-        [% END %]
-    [% END %] 
+        [% END -%]
+    [% END -%] 
 
-    <ul style="font-family:'Courier New', Courier, monospace; font-size:100%">
-    [% FOREACH archive_dir IN dataset_dirs; %]
-        <li><b>[% archive_dir _ '/' %]</b>
-        [% IF content.$archive_dir.child_paths.size > 0%]
-            [% step_by_step(content.$archive_dir.child_paths, content) %]
-        [% END %]
+    <ul class="tree2">
+    [% FOREACH archive_dir IN dataset_dirs; -%]
+        <li>
+            <details open><summary>
+                <b>[% archive_dir _ '/' -%]</b>
+                [% IF content.$archive_dir.child_paths.size > 0 -%]
+                    [% step_by_step(content.$archive_dir.child_paths, content) -%]
+                [% END -%]
+            </summary></details>
         </li>
-
-    [% END %]
+    [% END -%]
     </ul>
 
+
+<!--
+    2. Tree Run
+-->
 
   
   

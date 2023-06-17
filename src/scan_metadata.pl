@@ -88,6 +88,8 @@ generate_html(\@ARCHIVE_DIRS, $config1, $merged_hash);
 # return hash
 sub scan_tree{
     my($counter, $dirs,$tree_hash, $config1) = @_;
+    
+    my @SCAN_PROHIBITED_DIRS = split(",",$config1->{metadataconfig}->{scan_prohibited_dirs});
    
     foreach my $dir (@$dirs) {
         #say($dir);
@@ -116,6 +118,15 @@ sub scan_tree{
         $$tree_hash{$dir}{access}      = sprintf "%04o", $mode & 07777;
         $$tree_hash{$dir}{owner}       = getpwuid $uid;      
         $$tree_hash{$dir}{group}       = getgrgid $gid;
+        
+        
+        # check if enter dir is prohibited
+        $$tree_hash{$dir}{is_prohibited}    = 0;
+        if ( grep( /^$dir$/, @SCAN_PROHIBITED_DIRS ) ) {
+            print "found";
+            $$tree_hash{$dir}{is_prohibited}= 1;
+        }
+        
 
         
         
@@ -132,15 +143,17 @@ sub scan_tree{
         }
         
                 
-        # next deep
-        if($counter == 0 && $$tree_hash{$dir}{is_executable}) {
-            if($config1->{metadataconfig}->{show_total_size_directory_tree}) {
-                $b = $pcd->basename;
-                my $du = `du -sh $dir | cut -f1`;
-                $$tree_hash{$dir}{disk_usage} = $du;
-            }
+        # next deep and disk usage
+        
+        # disk usage
+        if($counter == 0 && $config1->{metadataconfig}->{show_total_size_directory_tree}) {
+            $b = $pcd->basename;
+            my $du = `du -sh $dir | cut -f1`;
+            $$tree_hash{$dir}{disk_usage} = $du;
         }
-        else {
+        
+        
+        if($counter > 0 && $$tree_hash{$dir}{is_executable} && $$tree_hash{$dir}{is_prohibited} == 0) {
             $tree_hash = scan_tree($counter - 1, \@sub_dirs, $tree_hash, $config1);
         }
     }
