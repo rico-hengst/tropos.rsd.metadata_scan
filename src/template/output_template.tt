@@ -271,7 +271,7 @@
                     [% content.$child.current_dir _ '/ '; -%]
                     </span>
                     [% IF content.$child.metadata;
-                        '<a href="#' _ content.$child.metadata.pathfilename _ ' style="margin-left: 2.5em">' _ content.$child.metadata.filename _ '</a>';
+                        '<a href="#' _ content.$child.metadata.pathfilename _ '" style="margin-left: 2.5em">' _ content.$child.metadata.filename _ '</a>';
                     END;
                     '<span class="additional-info">';
                     IF config.metadataconfig.show_owner_group;                 
