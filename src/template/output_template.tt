@@ -221,8 +221,8 @@
     <div class="row" style="margin-top:0.1ex">
         
         <div class="column" style="background-color:none;">
-            <h1>Catalogue METADATA</h1>
-            <p>The catalogue contains selected metadata of the archived data <br/>rof the emote sensing working group of TROPOS.</p>
+            <h1>[% config.metadataconfig.page_title ? config.metadataconfig.page_title : 'Title'%]</h1>
+            <p>[% config.metadataconfig.page_description ? config.metadataconfig.page_description : 'Description'%]</p>
         </div>
 
         <div class="column" style="background-color:none;margin-top:1ex">
@@ -278,8 +278,12 @@
                         '<abbr title="Owner and Group"><span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span></abbr>';
                         '<abbr title="Directory access"><span class="pill0">' _ content.$child.access _ '</span></abbr>';
                     END;
-                    IF content.$child.disk_usage; ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ '</span></abbr>'; END;
-                    IF content.$child.is_prohibited; '<abbr title="Content not scanned!"><span class="pill999">!</span></abbr>'; END;
+                    IF content.$child.disk_usage; 
+                        ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ '</span></abbr>'; 
+                    END;
+                    IF content.$child.is_prohibited; 
+                        '<abbr title="Content not scanned!"><span class="pill999">!</span></abbr>'; 
+                    END;
                     UNLESS content.$child.is_executable; 
                         ' <abbr title="No authorisation to enter directory!"><span class="pill999">!</span></abbr>'; 
                     END;
