@@ -95,7 +95,6 @@
         
         .pill2 {
           max-width:10ex;
-          margin-right: 1em;
           border: 0.1mm solid blue;
           padding:0.3ex;
           border-radius: 40px 999em 999em 40px;
@@ -127,11 +126,72 @@
           border: 0.1mm solid gray;
           background-color:red;
           color:white;
-          padding:0.4ex;
+          padding:0.5ex;
           border-radius: 2em;
-          font-size: 70%;
+          font-size: 80%;
           font-weight: bold;
         }
+        
+        
+        /* source https://iamkate.com/code/tree-views/ */
+        .tree2{
+          --spacing : 1.5rem;
+          --radius  : 10px;
+        }
+        
+        .tree2 li{
+          display      : block;
+          position     : relative;
+          padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
+        }
+
+        .tree2 ul{
+          margin-left  : calc(var(--radius) - var(--spacing));
+          padding-left : 0;
+        }
+        
+        .tree2 ul li{
+          border-left : 2px solid #ddd;
+        }
+
+        .tree2 ul li:last-child{
+          border-color : transparent;
+        }
+        
+        .tree2 ul li::before{
+          content      : '';
+          display      : block;
+          position     : absolute;
+          top          : calc(var(--spacing) / -2);
+          left         : -2px;
+          width        : calc(var(--spacing) + 2px);
+          height       : calc(var(--spacing) + 1px);
+          border       : solid #ddd;
+          border-width : 0 0 2px 2px;
+        }
+        
+        /*
+        .tree2 summary{
+          display : block;
+          cursor  : pointer;
+        }
+
+        .tree2 summary::marker,
+        .tree2 summary::-webkit-details-marker{
+          display : none;
+        }
+
+        .tree2 summary:focus{
+          outline : none;
+        }
+
+        .tree2 summary:focus-visible{
+          outline : 1px dotted #000;
+        }
+        
+
+        */
+        
     </style>
 <!--
     <script charset="utf-8" src="js/app.js"></script>
@@ -177,6 +237,61 @@
 
 
     <hr style="margin-top:5ex;margin-bottom:5ex" />
+    
+    
+    
+    
+    
+    
+    <ul class="tree2">
+        <li>
+            <details open>
+              <summary>Giant planets</summary>
+              <ul>
+                <li>
+                  <details open>
+                    <summary>Gas giants</summary>
+                    <ul>
+                      <li>Jupiter</li>
+                      <li>
+                        <details open>
+                            <summary>ewgwg</summary>
+                        </details>
+                          
+                    </li>
+                          
+                    </ul>
+                  </details>
+                </li>
+                <li>
+                  <details>
+                    <summary>Ice giants</summary>
+                    <ul>
+                      <li>Uranus</li>
+                      <li>Neptune</li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+            </details>
+          </li>
+    </ul>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
     <h2 id="tree_id">1. Directory tree(s)</h2>
@@ -196,17 +311,20 @@
                         '<a href="#' _ content.$child.metadata.pathfilename _ ' style="margin-left: 2.5em">' _ content.$child.metadata.filename _ '</a>';
                     END;
                     IF config.metadataconfig.show_owner_group;
-                        '<span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span>';
-                        '<span class="pill0">' _ content.$child.access _ '</span>';
+                        '<abbr title="World Health Organization">WHO</abbr>';
+                    
+                        '<abbr title="Owner and Group"><span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span></abbr>';
+                        '<abbr title="Directory access"><span class="pill0">' _ content.$child.access _ '</span></abbr>';
                     END;
+                    IF content.$child.disk_usage; ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ '</span></abbr>'; END;
+
                     UNLESS content.$child.is_executable; 
-                        ' <span class="pill999">No authorisation to enter directory!</span>'; 
+                        ' <abbr title="No authorisation to enter directory!"><span class="pill999">!</span></abbr>'; 
                     END;
-                    IF content.$child.disk_usage; '  <span class="pill0">disk usage: ' _ content.$child.disk_usage _ '</span>'; END; %]
-                    [% IF content.$child.child_paths.size > 0 %]
-                            [% step_by_step(content.$child.child_paths, content) %]
+                    IF content.$child.child_paths.size > 0;
+                            step_by_step(content.$child.child_paths, content);
                         
-                    [% END %]
+                    END %]
                 </li>
             [% END %]
             </ul>
