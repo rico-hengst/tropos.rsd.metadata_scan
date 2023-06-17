@@ -93,6 +93,19 @@
               text-shadow: 5px 5px 10px black;
         }
         
+        .navbox {
+            margin-right:2em; 
+            padding:1.5ex; 
+            background-color:black;
+            color:white;
+            font-weight:bold;
+            font-size:120%;
+            text-decoration:none;
+            border: 1px solid #ccc;
+            border-radius:0.5ex;
+        }
+        
+        
         .pill2 {
           max-width:10ex;
           border: 0.1mm solid blue;
@@ -130,6 +143,10 @@
           border-radius: 2em;
           font-size: 80%;
           font-weight: bold;
+        }
+        
+        .additional-info {
+            visibility:hidden;
         }
         
         
@@ -223,17 +240,9 @@
     
 
     
-    <button onclick="window.location.href='#tree_id';">
-      1. Directory tree
-    </button>
-    
-    <button onclick="window.location.href='#section_table_id';">
-      2. Metadata catalogue table
-    </button>
-    
-    <button onclick="window.location.href='#id_documents';">
-      3. How to add/update a METADATA file?
-    </button>
+    <a href="#tree_id" class="navbox">1. Directory tree</a>
+    <a href="#section_table_id" class="navbox">2. Metadata catalogue table</a>
+    <a href="#id_documents" class="navbox">3. How to add/update a METADATA file?</a>
 
 
     <hr style="margin-top:5ex;margin-bottom:5ex" />
@@ -288,13 +297,10 @@
     
     
     
-    
-    
-    
-    
 
 
     <h2 id="tree_id">1. Directory tree(s)</h2>
+    <button onclick="myFunction()">Show more/less</button>
     [% MACRO step_by_step(childs, content) BLOCK %]
         [% contains_a_valid_record = 0 %]
         [% FOREACH child IN childs %]
@@ -310,9 +316,8 @@
                     IF content.$child.metadata;
                         '<a href="#' _ content.$child.metadata.pathfilename _ ' style="margin-left: 2.5em">' _ content.$child.metadata.filename _ '</a>';
                     END;
-                    IF config.metadataconfig.show_owner_group;
-                        '<abbr title="World Health Organization">WHO</abbr>';
-                    
+                    '<span class="additional-info">';
+                    IF config.metadataconfig.show_owner_group;                 
                         '<abbr title="Owner and Group"><span class="pill1">' _ content.$child.owner _ '</span><span class="pill2">' _ content.$child.group _ '</span></abbr>';
                         '<abbr title="Directory access"><span class="pill0">' _ content.$child.access _ '</span></abbr>';
                     END;
@@ -321,10 +326,12 @@
                     UNLESS content.$child.is_executable; 
                         ' <abbr title="No authorisation to enter directory!"><span class="pill999">!</span></abbr>'; 
                     END;
+                    '</span>';
+                    
                     IF content.$child.child_paths.size > 0;
-                            step_by_step(content.$child.child_paths, content);
-                        
+                        step_by_step(content.$child.child_paths, content);
                     END %]
+                   
                 </li>
             [% END %]
             </ul>
@@ -515,10 +522,20 @@ $(document).ready( function () {
     
     $("#created_id").text(hh + " hour(s) ago");
     
-
 } );
 
-
+    
+    function myFunction() {
+        var x = document.getElementsByClassName("additional-info");
+        
+        for (var i = 0; i < x.length; i++) {
+            if (x[i].style.visibility === "hidden") {
+                x[i].style.visibility = "visible";
+            } else {
+                x[i].style.visibility = "hidden";
+            }
+        }
+    } 
 </script>
 
 
