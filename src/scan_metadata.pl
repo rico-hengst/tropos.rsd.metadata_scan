@@ -111,13 +111,14 @@ sub scan_tree{
 
         say(" dir: $dir");
         # add record to hash
-        $$tree_hash{$dir}{parent_path} = $pcd->parent->stringify;
-        $$tree_hash{$dir}{child_paths} = \@sub_dirs;
-        $$tree_hash{$dir}{current_dir} = $pcd->basename;
+        $$tree_hash{$dir}{parent_path}          = $pcd->parent->stringify;
+        $$tree_hash{$dir}{child_paths}          = \@sub_dirs;
+        $$tree_hash{$dir}{current_dir}          = $pcd->basename;
         
-        $$tree_hash{$dir}{access}      = sprintf "%04o", $mode & 07777;
-        $$tree_hash{$dir}{owner}       = getpwuid $uid;      
-        $$tree_hash{$dir}{group}       = getgrgid $gid;
+        $$tree_hash{$dir}{access}               = sprintf "%04o", $mode & 07777;
+        $$tree_hash{$dir}{owner}                = getpwuid $uid;      
+        $$tree_hash{$dir}{group}                = getgrgid $gid;
+        $$tree_hash{$dir}{level_directory_tree} = $config1->{metadataconfig}->{maxlevel_directory_tree} - $counter;
         
         
         # check if enter dir is prohibited

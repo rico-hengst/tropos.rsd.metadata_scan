@@ -266,7 +266,7 @@
             <ul>
             [% FOREACH child IN childs -%]
                 <li>
-                    <details open><summary>
+                    <details [% content.$child.level_directory_tree < 3 ? 'open' : '' %]><summary>
                     <span style="[% content.$child.is_prohibited ? 'color:gray' : ''; -%]">
                     [% content.$child.current_dir _ '/ '; -%]
                     </span>
@@ -289,7 +289,7 @@
                     END;
                     '</span>
                     </summary>';
-                    
+                                
                     IF content.$child.child_paths.size > 0;
                         step_by_step(content.$child.child_paths, content);
                     END -%]
