@@ -109,7 +109,7 @@ sub scan_tree{
         # get stat info
         my ($device, $inode, $mode, $nlink, $uid, $gid, $rdev, $size, $atime, $mtime, $ctime, $blksize, $blocks) = stat($dir);
 
-        say("mode $mode" . sprintf "%04o", $mode & 07777);
+        say("mode $mode" . sprintf "%04o", $mode & 07777 . " dir: $dir");
         # add record to hash
         $$tree_hash{$dir}{parent_path} = $pcd->parent->stringify;
         $$tree_hash{$dir}{child_paths} = \@sub_dirs;
@@ -123,7 +123,7 @@ sub scan_tree{
         # check if enter dir is prohibited
         $$tree_hash{$dir}{is_prohibited}    = 0;
         if ( grep( /^$dir$/, @SCAN_PROHIBITED_DIRS ) ) {
-            print "found";
+            print "prohibited dir found";
             $$tree_hash{$dir}{is_prohibited}= 1;
         }
         
