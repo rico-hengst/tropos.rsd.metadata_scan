@@ -279,7 +279,7 @@
                         '<abbr title="Directory access"><span class="pill0">' _ content.$child.access _ '</span></abbr>';
                     END;
                     IF content.$child.disk_usage; 
-                        ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ '</span></abbr>'; 
+                        ' <abbr title="Disk usage"><span class="pill0">' _ content.$child.disk_usage _ ' GB</span></abbr>'; 
                     END;
                     IF content.$child.is_prohibited; 
                         '<abbr title="Content not scanned!"><span class="pill999">!</span></abbr>'; 

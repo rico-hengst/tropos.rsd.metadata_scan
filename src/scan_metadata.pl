@@ -71,9 +71,6 @@ my $time3 = DateTime->now();
 # merge
 my $merged_hash = merge_hashes($meta_hash, $tree_hash);
 
-#say(dump ${ $merged_hash }{"/home/hengst/Documents/russland"});
-#say(dump(%$merged_hash));
-
 # generate html
 $$config1{time_consumption_directory_tree} = $time2 - $time1;
 $$config1{time_consumption_metadata} = DateTime->now() - $time3;
@@ -82,6 +79,8 @@ say(dump(%$config1));
 
 generate_html(\@ARCHIVE_DIRS, $config1, $merged_hash);
 
+say("2-1" . dump($time2 - $time1));
+say("2-1" . dump(DateTime->now() - $time3));
 
 #######################
 # scan directory tree
@@ -149,7 +148,9 @@ sub scan_tree{
         # disk usage
         if($counter == 0 && $config1->{metadataconfig}->{show_total_size_directory_tree}) {
             $b = $pcd->basename;
-            my $du = `du -sh $dir | cut -f1`;
+            # du in GB
+            my $du = `du -s --block-size=1G $dir | awk '{print \$1 /1024/1024}' | awk '{printf "\%4.2f", \$1}' | cut -f1`;
+ 
             $$tree_hash{$dir}{disk_usage} = $du;
         }
         
