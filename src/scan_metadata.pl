@@ -109,7 +109,7 @@ sub scan_tree{
         # get stat info
         my ($device, $inode, $mode, $nlink, $uid, $gid, $rdev, $size, $atime, $mtime, $ctime, $blksize, $blocks) = stat($dir);
 
-        say("mode $mode" . sprintf "%04o", $mode & 07777 . " dir: $dir");
+        say(" dir: $dir");
         # add record to hash
         $$tree_hash{$dir}{parent_path} = $pcd->parent->stringify;
         $$tree_hash{$dir}{child_paths} = \@sub_dirs;
