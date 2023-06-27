@@ -149,8 +149,8 @@ sub scan_tree{
         if($counter == 0 && $config1->{metadataconfig}->{show_total_size_directory_tree}) {
             $b = $pcd->basename;
             # du in GB
-            my $du = `du -s --block-size=1G $dir | awk '{print \$1 /1024/1024}' | awk '{printf "\%4.2f", \$1}' | cut -f1`;
-            say("disk usage: $du");
+            my $du = `du -s $dir | cut -f1 | awk '{print \$1 /1024/1024}' | awk '{printf "\%4.2f", \$1}'`;
+            #say("disk usage: $du");
  
             $$tree_hash{$dir}{disk_usage} = $du;
         }
