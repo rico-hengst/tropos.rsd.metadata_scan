@@ -59,7 +59,13 @@ $rule->maxdepth(1);
 # main
 my $time1 = DateTime->now();
 my ($tree_hash) = scan_tree($config1->{metadataconfig}->{maxlevel_directory_tree},\@ARCHIVE_DIRS,{},$config1);
+sleep(61);
 my $time2 = DateTime->now();
+
+
+my $rr= $time2 - $time1;
+
+say("minutes " . $rr->in_units('minutes') . ", seconds" . $rr->in_units('seconds'));
 
 
 #say($duration_scan_tree);

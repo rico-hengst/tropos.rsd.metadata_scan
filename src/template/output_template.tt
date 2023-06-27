@@ -227,7 +227,7 @@
 
         <div class="column" style="background-color:none;margin-top:1ex">
             <p>Catalogue created: <abbr class="shadow-text" id="created_id" title="[% datetime.ymd; ' '; datetime.hms %]">??</abbr> </p>
-            Scanned directories: <span class="shadow-text">[% config.time_consumption_directory_tree ? ' ... ' _ config.time_consumption_directory_tree.in_units('seconds') _ ' seconds scantime': '' %]</span>
+            Scanned directories: <span class="shadow-text">[% config.time_consumption_directory_tree ? ' ... ' _ config.time_consumption_directory_tree.in_units('minutes') _ "minutes, " _ config.time_consumption_directory_tree.in_units('seconds') _ ' seconds scantime': '' %]</span>
             <ul>[% FOREACH dataset_dir IN dataset_dirs %]
                 <li>Directory [% loop.count %]: <span class="shadow-text">[% dataset_dir %]</span></li>
             [% END %]
@@ -266,7 +266,7 @@
             <ul>
             [% FOREACH child IN childs -%]
                 <li>
-                    <details [% content.$child.level_directory_tree < 3 ? 'open' : '' %]><summary>
+                    <details [% content.$child.level_directory_tree < 2 ? 'open' : '' %]><summary>
                     <span style="[% content.$child.is_prohibited ? 'color:gray' : ''; -%]">
                     [% content.$child.current_dir _ '/ '; -%]
                     </span>
