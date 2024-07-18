@@ -266,7 +266,7 @@
             <ul>
             [% FOREACH child IN childs -%]
                 <li>
-                    <details [% content.$child.level_directory_tree < 2 ? 'open' : '' %]><summary>
+                    <details [% content.$child.level_directory_tree < 1 ? 'open' : '' %]><summary>
                     <span style="[% content.$child.is_prohibited ? 'color:gray' : ''; -%]">
                     [% content.$child.current_dir _ '/ '; -%]
                     </span>
