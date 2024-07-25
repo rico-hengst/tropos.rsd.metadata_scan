@@ -305,6 +305,11 @@
         <li>
             <details open><summary>
                 <b>[% archive_dir _ '/' -%]</b>
+                [% IF content.$archive_dir.disk_usage; 
+                    '<span class="additional-info">';
+                    '<abbr title="Disk usage"><span class="pill0">' _ content.$archive_dir.disk_usage _ ' GB</span></abbr>'; 
+                    '</span>';
+                END; %]
                 [% IF content.$archive_dir.child_paths.size > 0 -%]
                     [% step_by_step(content.$archive_dir.child_paths, content) -%]
                 [% END -%]

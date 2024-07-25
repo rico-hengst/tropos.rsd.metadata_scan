@@ -1,0 +1,27 @@
+absolute_name,dir_size
+[%- MACRO step_by_step(childs, content, archive_dir) BLOCK -%]
+    [%- contains_a_valid_record = 0 -%]
+    [%- FOREACH child IN childs -%]
+        [%- IF content.$child -%]
+            [%- contains_a_valid_record = 1 -%]
+        [%- END -%]
+    [%- END -%]
+    [%- IF contains_a_valid_record == 1 -%]
+        [% FOREACH child IN childs %]
+[% child.replace(archive_dir, rootalias) _ ',' =%]
+            [% IF content.$child.disk_usage;
+content.$child.disk_usage;
+            ELSE;
+0;
+            END;
+            IF content.$child.child_paths.size > 0;
+                step_by_step(content.$child.child_paths, content, archive_dir);
+            END %]
+        [% END %]
+    [%- END -%]
+[%- END -%] 
+[%- FOREACH archive_dir IN dataset_dirs; -%]
+    [%- IF content.$archive_dir.child_paths.size > 0 -%]
+        [%- step_by_step(content.$archive_dir.child_paths, content, archive_dir) -%]
+    [%- END -%]
+[%- END -%]

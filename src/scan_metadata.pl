@@ -19,10 +19,38 @@ use Path::Class;  # Exports dir() by default
 
 use Data::Dump qw(dump);
 
+use Getopt::Long qw(GetOptions);
+
+use Chart::Plotly::Trace::Sunburst;
+use Chart::Plotly::Plot;
+  
+
 
 
 # get config
 my $config_file = $FindBin::Bin . "/../config/config.ini.private";
+
+
+sub usage {
+    print <<EOF;
+######################################################################################
+Usage:       $0 ../../done_filelist/done_filelist_20190509.txt --check_image_exists yes
+
+Description: The script processes a file (done_file_list) and update the polly database.
+
+Options:
+            -check_image_exists        (yes|no) DEFAULT: yes
+######################################################################################
+EOF
+    exit 1;
+}
+
+
+GetOptions(
+    "config_file=s"  => \$config_file
+) or die usage() . "\n";
+
+
 
 unless (-f $config_file) {
     say "Config file not exists $config_file";
@@ -59,7 +87,7 @@ $rule->maxdepth(1);
 # main
 my $time1 = DateTime->now();
 my ($tree_hash) = scan_tree($config1->{metadataconfig}->{maxlevel_directory_tree},\@ARCHIVE_DIRS,{},$config1);
-sleep(61);
+#sleep(61);
 my $time2 = DateTime->now();
 
 
@@ -76,6 +104,8 @@ my $meta_hash = scan_m(\@ARCHIVE_DIRS, $config1);
 my $time3 = DateTime->now();
 # merge
 my $merged_hash = merge_hashes($meta_hash, $tree_hash);
+my $merged_hash = add_du_to_all(\@ARCHIVE_DIRS, $config1, $merged_hash);
+
 
 # generate html
 $$config1{time_consumption_directory_tree} = $time2 - $time1;
@@ -84,6 +114,7 @@ $$config1{time_consumption_metadata} = DateTime->now() - $time3;
 say(dump(%$config1));
 
 generate_html(\@ARCHIVE_DIRS, $config1, $merged_hash);
+generate_file_size(\@ARCHIVE_DIRS, $config1, $merged_hash);
 
 say("2-1" . dump($time2 - $time1));
 say("2-1" . dump(DateTime->now() - $time3));
@@ -156,6 +187,7 @@ sub scan_tree{
             $b = $pcd->basename;
             # du in GB
             my $du = `du -s $dir | cut -f1 | awk '{print \$1 /1024/1024}' | awk '{printf "\%4.2f", \$1}'`;
+            #my $du = `du -s $dir | cut -f1 | awk '{print \$1 /1024}' | awk '{printf "\%4.2f", \$1}'`;
             #say("disk usage: $du");
  
             $$tree_hash{$dir}{disk_usage} = $du;
@@ -223,6 +255,43 @@ sub merge_hashes {
     return $merged_hash;
 }
 
+##############################
+# compute disk_usage to upper dirs
+sub add_du_to_all {
+    my ($archive_dirs, $config1, $hash) = @_;
+    
+    foreach my $archive_dir (@$archive_dirs) {
+    }
+    
+    
+    my $icount = $config1->{metadataconfig}->{maxlevel_directory_tree};
+    while ($icount > 0)
+    {
+        foreach my $dir (keys $hash) {
+            #say "dir: " . $dir;
+            if($$hash{$dir}{level_directory_tree} == $icount) {
+                my $parent_path = $$hash{$dir}{parent_path};
+                
+                unless ($$hash{$dir}{disk_usage}) {
+                    $$hash{$dir}{disk_usage} = 0;
+                }
+                if (exists($$hash{$parent_path}{disk_usage})){
+                    #say $dir ." 1  " . $$hash{$dir}{disk_usage};
+                    $$hash{$parent_path}{disk_usage} = $$hash{$parent_path}{disk_usage} + 0 + $$hash{$dir}{disk_usage} + 0;
+                    #say $dir ." 2  " . $$hash{$dir}{disk_usage};
+                }
+                else {
+                    $$hash{$parent_path}{disk_usage} = $$hash{$dir}{disk_usage} + 0;
+                }
+            }
+        }
+
+        $icount--;
+    }
+    #print dump($hash);
+    return $hash;
+}
+
 
 ##############################
 # generate html from template
@@ -249,3 +318,67 @@ sub generate_html {
     )
     or die $tt->error;
 }
+
+##############################
+# generate txt from template
+sub generate_file_size {
+    my ($archive_dirs, $config1, $hash) = @_;
+    
+    my $template_file   = $FindBin::Bin . "/template/file_size_template.tt";
+
+    foreach my $archive_dir (@$archive_dirs) {
+        
+        my $rootalias = "";
+        my @parts = split('/', $archive_dir);
+        if( @parts > 1 ) {
+            $rootalias = $parts[@parts - 2];
+        } else {
+            $rootalias = '/';
+        }
+                
+        
+        
+        my $output_file     = $config1->{metadataconfig}->{output_file_file_size} ? $config1->{metadataconfig}->{output_file} : $FindBin::Bin . "/" . $rootalias . "_file_size.txt";
+        say("Generate TXT" . $output_file);
+
+        my $tt = Template->new({
+            ENCODING    => 'utf8',
+            ABSOLUTE    => 1
+            });
+            
+        $tt->process(
+            $template_file, 
+            {
+                    content => $hash, 
+                    config => $config1,
+                    dataset_dirs => [$archive_dir],
+                    rootalias => $rootalias,
+                    datetime => DateTime->now()}, 
+            $output_file,
+            #{binmode => ':utf8'}
+        )
+        or die $tt->error;
+    }
+
+}
+
+
+
+#my $trace1 = Chart::Plotly::Trace::Sunburst->new(
+      #"labels"=>["Eve", "Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+      #"parents"=>["", "Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+      #"domain"=>{"x"=>[0, 0.5]}
+  #);
+  
+#my $trace2 = Chart::Plotly::Trace::Sunburst->new(
+      #"labels"=>["Cain", "Seth", "Enos", "Noam", "Abel", "Awan", "Enoch", "Azura"],
+      #"parents"=>["Eve", "Eve", "Seth", "Seth", "Eve", "Eve", "Awan", "Eve" ],
+      #"domain"=>{"x"=>[0.5, 1]}
+  #);
+  
+#my $plot = Chart::Plotly::Plot->new(
+    #traces => [ $trace1, $trace2 ],
+#);
+
+#Chart::Plotly::render_full_html($trace1);
+  

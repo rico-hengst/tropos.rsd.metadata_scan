@@ -17,3 +17,6 @@ requires 'Config::Tiny';
 requires 'File::Find::Rule';
 requires 'Encode';
 requires 'Path::Class';
+
+requires 'Chart::Plotly::Plot';
+requires 'Chart::Plotly::Trace::Sunburst';
